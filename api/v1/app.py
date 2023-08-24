@@ -1,13 +1,17 @@
 #!/usr/bin/python3
 """starts a Flask web application"""
-from flask import Flask, render_template, make_response, jsonify
+from flask import Flask, make_response, jsonify
 from models import storage
 import os
 from api.v1.views import app_views
+from flask_cors import CORS
 
 
 app = Flask(__name__)
 app.register_blueprint(app_views)
+
+cors = CORS(app, resources={r"/*": {"origin": "0.0.0.0"}},
+            methods=['GET', 'PUT', 'DELETE', 'POST'])
 
 
 @app.teardown_appcontext
