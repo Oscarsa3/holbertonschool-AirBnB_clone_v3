@@ -115,11 +115,6 @@ class TestFileStorage(unittest.TestCase):
         self.assertEqual(json.loads(string), json.loads(js))
 
     @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
-    def test_count(self):
-        storage = FileStorage()
-        self.assertEqual(type(storage.count(State)), int)
-
-    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
     def test_get(self):
         storage = FileStorage()
         new_state = State(name="Lima")
@@ -132,3 +127,18 @@ class TestFileStorage(unittest.TestCase):
         storage.save()
         obj = storage.get(State, state_id)
         self.assertIsNone(obj)
+
+    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
+    def test_count(self):
+        new_state = State(name="Colombia")
+        new_state_2 = State(name="Chile")
+        state_1_id = new_state.id
+        models.storage.new(new_state)
+        models.storage.new(new_state_2)
+        models.storage.save()
+        new_city = City(name="Bogota", state_id=state_1_id)
+        models.storage.new(new_city)
+        models.storage.save()
+        count_state = models.storage.count(State)
+        count_all = models.storage.count()
+        self.assertTrue(count_all > count_state)
