@@ -40,12 +40,11 @@ def places_post(city_id):
     if obj_state is None:
         abort(404)
     data = request.get_json()
-    user_ids = [user.id for user in storage.all(User).values()]
     if data is None:
         return jsonify({"error": "Not a JSON"}), 400
     elif 'user_id' not in data:
         return jsonify({"error": "Missing user_id"}), 400
-    elif 'user_id' not in user_ids:
+    elif storage.get(User, data['user_id']) is None:
         abort(404)
     elif 'name' not in data:
         return jsonify({"error": "Missing name"}), 400
