@@ -26,7 +26,7 @@ def places_get(city_id):
                  strict_slashes=False)
 def places_get_with_id(place_id):
     """returns a json file with the dictionary of an object by its id"""
-    obj = storage.get(City, place_id)
+    obj = storage.get(Place, place_id)
     if obj is None:
         abort(404)
     return jsonify(obj.to_dict())
