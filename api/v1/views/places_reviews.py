@@ -55,7 +55,7 @@ def reviews_post(place_id):
     return jsonify(new_review.to_dict()), 201
 
 
-@app_views.route('/reviews/<reviews_id>', methods=['DELETE'],
+@app_views.route('/reviews/<review_id>', methods=['DELETE'],
                  strict_slashes=False)
 def reviews_delete(review_id):
     """returns a json file with an empty dictionary if successfully deleted"""
@@ -67,7 +67,7 @@ def reviews_delete(review_id):
     return jsonify({}), 200
 
 
-@app_views.route('/reviews/<reviews_id>', methods=['PUT'],
+@app_views.route('/reviews/<review_id>', methods=['PUT'],
                  strict_slashes=False)
 def reviews_put(review_id):
     """returns a json file with the dictionary of an
