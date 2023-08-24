@@ -2,6 +2,7 @@
 """starts a Flask web application"""
 from flask import Flask, render_template, make_response, jsonify
 from models import storage
+import os
 from api.v1.views import app_views
 
 
@@ -22,4 +23,14 @@ def not_found(error):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, threaded=True)
+    host = None
+    port = None
+    if os.getenv('HBNB_API_HOST'):
+        host = os.getenv('HBNB_API_HOST')
+    else:
+        host = '0.0.0.0'
+    if os.getenv('HBNB_API_PORT'):
+        port = int(os.getenv('HBNB_API_PORT'))
+    else:
+        port = 5000
+    app.run(host=host, port=port, threaded=True)
