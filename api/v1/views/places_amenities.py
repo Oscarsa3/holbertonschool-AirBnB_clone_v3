@@ -5,6 +5,7 @@ from . import app_views
 from models import storage
 from models.place import Place
 from models.amenity import Amenity
+import os
 
 
 @app_views.route('/places/<place_id>/amenities', methods=['GET'],
