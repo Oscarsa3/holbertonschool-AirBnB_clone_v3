@@ -16,7 +16,7 @@ def amenity_get(place_id):
         abort(404)
     list_amenities = []
     for amenity in storage.all(Amenity).values():
-        if amenity.place_id == place_id:
+        if amenity.id == obj_place.amenity_id:
             list_amenities.append(amenity.to_dict())
     return jsonify(list_amenities)
 
@@ -31,7 +31,7 @@ def amenity_post(place_id):
         abort(404)
     exist = 0
     for amenity in storage.all(Amenity).values():
-        if amenity.place_id == place_id:
+        if amenity.id == amenity_id:
             return jsonify(amenity.to_dict()), 200
     new_amenity = Amenity()
     storage.new(new_amenity)
@@ -49,7 +49,7 @@ def amenity_delete(place_id, amenity_id):
         abort(404)
     exist = 0
     for amenity in storage.all(Amenity).values():
-        if amenity.place_id == place_id:
+        if amenity.id == amenity_id:
             exist = 1
     if exist == 0:
         abort(404)
