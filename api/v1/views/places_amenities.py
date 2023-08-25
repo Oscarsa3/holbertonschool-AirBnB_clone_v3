@@ -16,9 +16,9 @@ def amenity_get(place_id):
         abort(404)
     list_amenities = []
     if os.getenv("HBNB_TYPE_STORAGE") == "db":
-        for amenity in storage.all(Amenity):
-            if amenity.id == obj_place.amenities.amenity_id:
-                list_amenities.append(amenity.to_ditc())
+        list_amenity = obj_place.amenities
+        for amenity in list_amenity:
+            list_amenities.append(amenity.to_dict)
     else:
         for amenity in obj_place.amenity_ids:
             list_amenities.append(storage.get(Amenity, amenity).to_dict)
@@ -57,7 +57,7 @@ def amenity_delete(place_id, amenity_id):
         abort(404)
     exist = 0
     if os.getenv("HBNB_TYPE_STORAGE") == "db":
-        if obj_amenity.id == obj_place.amenities.amenity_id:
+        if obj_amenity in obj_place.amenities:
             exist = 1
     else:
         if amenity_id in obj_place.amenity_ids:
