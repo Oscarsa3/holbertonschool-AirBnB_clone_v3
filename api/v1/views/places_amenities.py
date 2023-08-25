@@ -15,9 +15,13 @@ def amenity_get(place_id):
     if obj_place is None:
         abort(404)
     list_amenities = []
-    for amenity in storage.all(Amenity).values():
-        if place.amenity.place_id == place_id:
-            list_amenities.append(amenity.to_dict())
+    if os.getenv("HBNB_TYPE_STORAGE") == "db":
+        for amenity in storage.all(Amenity):
+            if amenity.id == obj_place.amenities.amenity_id:
+                list_amenities.append(amenity.to_ditc())
+    else:
+        for amenity in obj_place.amenity_ids:
+            list_amenities.append(storage.get(Amenity, amenity).to_dict)
     return jsonify(list_amenities)
 
 
@@ -27,7 +31,9 @@ def amenity_post(place_id):
     """returns a json file with the dictionary of a newly added object"""
     obj_place = storage.get(Place, place_id)
     obj_amenity = storage.get(Amenity, amenity_id)
-    if obj_place is None or obj_amenity is None:
+    if obj_place is None:
+        abort(404)
+    if obj_amenity is None:
         abort(404)
     exist = 0
     for amenity in storage.all(Amenity).values():
@@ -45,12 +51,16 @@ def amenity_delete(place_id, amenity_id):
     """returns a json file with an empty dictionary if successfully deleted"""
     obj_place = storage.get(Place, place_id)
     obj_amenity = storage.get(Amenity, amenity_id)
-    if obj_place is None or obj_amenity is None:
+    if obj_place is None:
+        abort(404)
+    if obj_amenity is None:
         abort(404)
     exist = 0
-    for amenity in storage.all(Amenity).values():
-        if place.amenity.place_id == place_id and \
-         place.amenity.amenity_id == amenity_id:
+    if os.getenv("HBNB_TYPE_STORAGE") == "db":
+        if obj_amenity.id == obj_place.amenities.amenity_id:
+            exist = 1
+    else:
+        if amenity_id in obj_place.amenity_ids:
             exist = 1
     if exist == 0:
         abort(404)
