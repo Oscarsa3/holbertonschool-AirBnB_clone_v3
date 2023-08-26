@@ -19,11 +19,11 @@ The console is the first segment of the AirBnB project at Holberton School that 
 * [License](#license)
 
 ## Environment
-This project is interpreted/tested on Ubuntu 14.04 LTS using python3 (version 3.4.3)
+This project is interpreted/tested on Ubuntu 20.04 LTS using python3 (version 3.8.5)
 
 ## Installation
-* Clone this repository: `git clone "https://github.com/alexaorrico/AirBnB_clone.git"`
-* Access AirBnb directory: `cd AirBnB_clone`
+* Clone this repository: `git clone "https://github.com/Oscarsa3/holbertonschool-AirBnB_clone_v3"`
+* Access AirBnb directory: `holbertonschool-AirBnB_clone_v3`
 * Run hbnb(interactively): `./console` and enter command
 * Run hbnb(non-interactively): `echo "<command>" | ./console.py`
 
@@ -38,6 +38,18 @@ List of commands this console current supports:
 * `show` - Prints the string representation of an instance based on the class name and id.
 * `all` - Prints all string representation of all instances based or not on the class name. 
 * `update` - Updates an instance based on the class name and id by adding or updating attribute (save the change into the JSON file). 
+
+#### `api/v1` directory contains our api in version v1
+[app.py](/api/v1/app.py) - The main app that wraps all views urls
+
+Views that are availables:
+* [amenities.py](/api/v1/views/amenities.py)
+* [cities.py](/api/v1/views/cities.py)
+* [index.py](/api/v1/views/index.py)
+* [places.py](/api/v1/views/places.py)
+* [states.py](/api/v1/views/states.py)
+* [users.py](/api/v1/views/users.py)
+* [places_reviews.py](/api/v1/views/places_reviews.py)
 
 #### `models/` directory contains classes used for this project:
 [base_model.py](/models/base_model.py) - The BaseModel class from which future classes will be derived
@@ -60,6 +72,14 @@ Classes inherited from Base Model:
 * `def new(self, obj)` - sets in __objects the obj with key <obj class name>.id
 * `def save(self)` - serializes __objects to the JSON file (path: __file_path)
 * ` def reload(self)` -  deserializes the JSON file to __objects
+
+[db_storage.py](/models/engine/db_storage.py) - Creates the conection to the database
+* `def all(self, cls=None)` - returns a dictionary with all objects of `cls`
+* `def new(self, obj)` - sets in database the obj
+* `def save(self)` - commits the changes made in the database
+* `def delete(self, cls=None)` - deletes the cls object
+* `def reload(self)` - creates the session with the database and builds the tables
+* `def close(self)` - removes the session
 
 #### `/tests` directory contains all unit test cases for this project:
 [/test_models/test_base_model.py](/tests/test_models/test_base_model.py) - Contains the TestBaseModel and TestBaseModelDocs classes
@@ -151,12 +171,14 @@ EOF  all  create  destroy  help  quit  show  update
 ```
 
 ## Bugs
-No known bugs at this time. 
+No known bugs at this time. If you find a bug, don't hesitate and contact us.
 
 ## Authors
 Alexa Orrico - [Github](https://github.com/alexaorrico) / [Twitter](https://twitter.com/alexa_orrico)  
 Jennifer Huang - [Github](https://github.com/jhuang10123) / [Twitter](https://twitter.com/earthtojhuang)
+Josue Cerron - [Github](https://github.com/xiayudev) / [Twitter](https://twitter.com/J7Jeo)
+Oscar Salinas - [Github](https://github.com/jhuang10123) / [Twitter](https://twitter.com/earthtojhuang)
 
 Second part of Airbnb: Joann Vuong
 ## License
-Public Domain. No copy write protection. 
+Public Domain. No copy write protection.
