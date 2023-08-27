@@ -54,6 +54,51 @@ def places_post(city_id):
     return jsonify(new_place.to_dict()), 201
 
 
+@app_views.route('/places_search', methods=['POST'],
+                 strict_slashes=False)
+def places_search():
+    """Search for places"""
+    # {"states": [ids], "cities": [ids], "amenities": [ids]}
+    data = request.get_json()
+    if data is None:
+        return jsonify({"error": "Not a JSON"}), 400
+    elif len(data) == 0 or all(len(v) == 0 for v in data.values()):
+        return [obj.to_dict() for obj in storage.all(Place).values()]
+
+    show = None
+    if data.get("cities") and len(data.get("cities")) > 0:
+        cities = data["cities"]
+        show = [v for v in storage.all(Place).values() if v.id in cities]
+    if len(data["states"]) > 0:
+        states = data["states"]
+        if show:
+            cities = [v.id for v in storage.all(
+                City).values() if v.id in states]
+            show = [place
+                    for place in storage.all(Place).values()
+                    if place.id in cities and place.id
+                    not in [v.id for v in show]] + show
+        else:
+            show = [v for v in storage.all(Place).values()]
+    flag = 0  # flag to check if amenities exist
+    new_list_places = []
+    if data.get("amenities") and len(data.get("amenities")) > 0:
+        flag = 1
+        exist = []
+        for value in show:
+            for amen in value.amenties:
+                if amen.id in data["amenities"]:
+                    exist.append(True)
+                else:
+                    exist.append(False)
+            if all(exist):
+                new_list_places.append(value.to_dict())
+    if flag:
+        return jsonify(new_list_places)
+    else:
+        return jsonify([v.to_dict() for v in show])
+
+
 @app_views.route('/places/<place_id>', methods=['DELETE'],
                  strict_slashes=False)
 def places_delete(place_id):

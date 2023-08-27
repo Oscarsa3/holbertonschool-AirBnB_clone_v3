@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """Create a new route"""
-from flask import jsonify, abort, request
+from flask import jsonify, abort
 from . import app_views
 from models import storage
 from models.place import Place
@@ -33,7 +33,6 @@ def amenity_post(place_id, amenity_id):
     obj_amenity = storage.get(Amenity, amenity_id)
     if obj_place is None or obj_amenity is None:
         abort(404)
-    exist = 0
     if os.getenv("HBNB_TYPE_STORAGE") == "db":
         if obj_amenity in obj_place.amenities:
             return jsonify(obj_amenity.to_dict()), 200
