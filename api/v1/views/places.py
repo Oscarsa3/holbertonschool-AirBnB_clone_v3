@@ -58,7 +58,6 @@ def places_post(city_id):
                  strict_slashes=False)
 def places_search():
     """Search for places"""
-    # {"states": [ids], "cities": [ids], "amenities": [ids]}
     data = request.get_json()
     if data is None:
         return jsonify({"error": "Not a JSON"}), 400
@@ -68,7 +67,7 @@ def places_search():
     show = None
     if data.get("cities") and len(data.get("cities")) > 0:
         cities = data["cities"]
-        show = [v for v in storage.all(Place).values() if v.id in cities]
+        show = [v for v in storage.all(Place).values() if v.city_id in cities]
     if data.get("states") and len(data["states"]) > 0:
         states = data["states"]
         if show:
@@ -81,32 +80,38 @@ def places_search():
         else:
             cities = [v.id for v in storage.all(
                 City).values() if v.state_id in states]
-            show = [v for v in storage.all(Place).values() if v.city_id in cities]
+            show = [v for v in storage.all(
+                Place).values() if v.city_id in cities]
     flag = 0  # flag to check if amenities exist
     new_list_places = []
     if data.get("amenities") and len(data.get("amenities")) > 0:
         flag = 1
-        exist = []
         if show:
             for value in show:
-                for amen in value.amenities:
-                    if amen.id in data["amenities"]:
+                exist = []
+                for id in data["amenities"]:
+                    if id in [v.id for v in value.amenities]:
                         exist.append(True)
                     else:
                         exist.append(False)
                 if all(exist):
-                    new_list_places.append(value.to_dict())
+                    new_list_places.append(value)
         else:
             for value in storage.all(Place).values():
-                for amen in value.amenities:
-                    if amen.id in data["amenities"]:
+                exist = []
+                for id in data["amenities"]:
+                    if id in [v.id for v in value.amenities]:
                         exist.append(True)
                     else:
                         exist.append(False)
                 if all(exist):
-                    new_list_places.append(value.to_dict())
+                    new_list_places.append(value)
+        all_places = [v.to_dict() for v in new_list_places]
+        for place in all_places:
+            amenities = place["amenities"]
+            place["amenities"] = [amen.to_dict() for amen in amenities]
     if flag:
-        return jsonify(new_list_places)
+        return jsonify(all_places)
     else:
         return jsonify([v.to_dict() for v in show])
 
