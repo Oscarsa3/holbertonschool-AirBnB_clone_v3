@@ -69,7 +69,7 @@ def places_search():
     if data.get("cities") and len(data.get("cities")) > 0:
         cities = data["cities"]
         show = [v for v in storage.all(Place).values() if v.id in cities]
-    if len(data["states"]) > 0:
+    if data.get("states") and len(data["states"]) > 0:
         states = data["states"]
         if show:
             cities = [v.id for v in storage.all(
@@ -79,20 +79,30 @@ def places_search():
                     if place.id in cities and place.id
                     not in [v.id for v in show]] + show
         else:
-            show = [v for v in storage.all(Place).values()]
+            show = [v for v in storage.all(Place).values() if v.id in states]
     flag = 0  # flag to check if amenities exist
     new_list_places = []
     if data.get("amenities") and len(data.get("amenities")) > 0:
         flag = 1
         exist = []
-        for value in show:
-            for amen in value.amenties:
-                if amen.id in data["amenities"]:
-                    exist.append(True)
-                else:
-                    exist.append(False)
-            if all(exist):
-                new_list_places.append(value.to_dict())
+        if show:
+            for value in show:
+                for amen in value.amenities:
+                    if amen.id in data["amenities"]:
+                        exist.append(True)
+                    else:
+                        exist.append(False)
+                if all(exist):
+                    new_list_places.append(value.to_dict())
+        else:
+            for value in storage.all(Place).values():
+                for amen in value.amenities:
+                    if amen.id in data["amenities"]:
+                        exist.append(True)
+                    else:
+                        exist.append(False)
+                if all(exist):
+                    new_list_places.append(value.to_dict())
     if flag:
         return jsonify(new_list_places)
     else:
