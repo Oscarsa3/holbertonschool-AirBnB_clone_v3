@@ -63,7 +63,7 @@ def places_search():
     if data is None:
         return jsonify({"error": "Not a JSON"}), 400
     elif len(data) == 0 or all(len(v) == 0 for v in data.values()):
-        return [obj.to_dict() for obj in storage.all(Place).values()]
+        return jsonify([obj.to_dict() for obj in storage.all(Place).values()])
 
     show = None
     if data.get("cities") and len(data.get("cities")) > 0:
@@ -73,13 +73,15 @@ def places_search():
         states = data["states"]
         if show:
             cities = [v.id for v in storage.all(
-                City).values() if v.id in states]
+                City).values() if v.state_id in states]
             show = [place
                     for place in storage.all(Place).values()
-                    if place.id in cities and place.id
+                    if place.city_id in cities and place.id
                     not in [v.id for v in show]] + show
         else:
-            show = [v for v in storage.all(Place).values() if v.id in states]
+            cities = [v.id for v in storage.all(
+                City).values() if v.state_id in states]
+            show = [v for v in storage.all(Place).values() if v.city_id in cities]
     flag = 0  # flag to check if amenities exist
     new_list_places = []
     if data.get("amenities") and len(data.get("amenities")) > 0:
